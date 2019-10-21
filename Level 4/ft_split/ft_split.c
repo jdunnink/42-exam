@@ -5,8 +5,8 @@
 /*                                                     +:+                    */
 /*   By: jdunnink <marvin@codam.nl>                   +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2019/06/17 09:40:02 by jdunnink      #+#    #+#                 */
-/*   Updated: 2019/06/17 10:14:22 by jdunnink      ########   odam.nl         */
+/*   Created: 2019/06/18 10:52:21 by jdunnink      #+#    #+#                 */
+/*   Updated: 2019/06/18 11:13:20 by jdunnink      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,78 +14,68 @@
 
 int		ft_isspace(char c)
 {
-	if (c == '\t' || c == ' ' || c == '\n')
+	if (c == '\t' || c == '\n' || c == ' ')
 		return (1);
 	return (0);
 }
 
-int		count_words(char *str)
+unsigned int count_words(char *str)
 {
-	int count;
-	int i;
+	unsigned int words;
+	unsigned int i;
 
-	count = 0;
-	while (ft_isspace(*str) == 1)
-		str++;
 	i = 0;
+	words = 0;
 	while (str[i] != '\0')
 	{
 		if (ft_isspace(str[i]) == 0 && ft_isspace(str[i + 1]) == 1)
-			count++;
+			words++;
 		else if (ft_isspace(str[i]) == 0 && str[i + 1] == '\0')
-			count++;
+			words++;
 		i++;
 	}
-	return (count);
-}
-
-int	ft_wordlen(char *str)
-{
-	int i;
-
-	i = 0;
-	while (ft_isspace(str[i]) == 0 && str[i] != '\0')
-		i++;
-	return (i);
+	return (words);
 }
 
 char *get_next_word(char **str)
 {
-	int len;
-	int i;
 	char *dest;
+	char *strt;
+	unsigned int len;
+	unsigned int i;
 
-	len = 0;
 	while (ft_isspace(**str) == 1 && **str != '\0')
-        *str = *str + 1;
-	len = ft_wordlen(*str);
+		*str = *str + 1;
+	strt = *str;
+	len = 0;
+	while (ft_isspace(**str) == 0 && **str != '\0')
+	{
+		len++;
+		*str = *str + 1;
+	}
 	dest = (char*)malloc(sizeof(char) * len + 1);
-	if (!dest)
-		return (0);
 	dest[len] = '\0';
 	i = 0;
 	while (i < len)
 	{
-		dest[i] = **str;
-		*str = *str + 1;
+		dest[i] = strt[i];
 		i++;
 	}
-	*str = *str + 1;
 	return (dest);
 }
 
 char **ft_split(char *str)
 {
-	char	**dest;
-	char	*ptr;
-	int		words;
-	int		i;
+	unsigned int	words;
+	unsigned int	i;
+	char			**dest;
+	char			*ptr;
 
-	ptr = str;
+	i = 0;
 	words = count_words(str);
 	dest = (char**)malloc(sizeof(char*) * words + 1);
 	dest[words] = NULL;
-	i = 0;
+	ptr = str;
 	while (i < words)
 	{
 		dest[i] = get_next_word(&ptr);
